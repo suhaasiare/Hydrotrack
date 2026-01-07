@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hydro Tracker</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #e0f7fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+  }
+
+  h1 {
+    color: #00796b;
+  }
+
+  .tracker {
+    background: #ffffff;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+
+  input[type="number"] {
+    padding: 10px;
+    width: 60px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+  }
+
+  button {
+    padding: 10px 15px;
+    border: none;
+    background: #00796b;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background 0.3s;
+  }
+
+  button:hover {
+    background: #004d40;
+  }
+
+  .progress-container {
+    margin-top: 20px;
+    width: 100%;
+    background: #b2dfdb;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 30px;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #00796b;
+    text-align: center;
+    line-height: 30px;
+    color: #fff;
+    transition: width 0.5s;
+  }
+
+  .log {
+    margin-top: 20px;
+    max-height: 150px;
+    overflow-y: auto;
+    text-align: left;
+  }
+
+  .log-entry {
+    background: #f1f8f8;
+    margin: 5px 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>💧 Hydro Tracker</h1>
+<div class="tracker">
+  <p>Daily Goal: <span id="goal">2000</span> ml</p>
+  <div>
+    <input type="number" id="amount" placeholder="ml">
+    <button onclick="addWater()">Add Water</button>
+  </div>
+  <button onclick="resetTracker()">Reset</button>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progress">0%</div>
+  </div>
+
+  <div class="log" id="log"></div>
+</div>
+
+<script>
+  let dailyGoal = 2000; // ml
+  let totalIntake = 0;
+
+  const progressBar = document.getElementById('progress');
+  const logDiv = document.getElementById('log');
+
+  function updateProgress() {
+    let percent = Math.min((totalIntake / dailyGoal) * 100, 100);
+    progressBar.style.width = percent + '%';
+    progressBar.textContent = Math.floor(percent) + '%';
+  }
+
+  function addWater() {
+    const amountInput = document.getElementById('amount');
+    let amount = parseInt(amountInput.value);
+    if (!amount || amount <= 0) {
+      alert('Please enter a valid amount!');
+      return;
+    }
+    totalIntake += amount;
+
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    let time = new Date().toLocaleTimeString();
+    entry.textContent = `Added ${amount} ml at ${time}`;
+    logDiv.prepend(entry);
+
+    amountInput.value = '';
+    updateProgress();
+  }
+
+  function resetTracker() {
+    if (!confirm('Are you sure you want to reset your daily intake?')) return;
+    totalIntake = 0;
+    logDiv.innerHTML = '';
+    updateProgress();
+  }
+
+  updateProgress();
+</script>
+
+</body>
+</html>
